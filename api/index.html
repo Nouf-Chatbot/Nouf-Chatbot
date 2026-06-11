@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ask Nouf | EDB Graduate Presentation</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,Arial,sans-serif;background:#EFF4FF;min-height:100vh;display:flex;flex-direction:column}
+.hdr{background:linear-gradient(135deg,#1C26A8,#1248c8);padding:18px 24px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.av{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;color:#fff;flex-shrink:0}
+.hdr-info h1{font-size:17px;color:#fff;font-weight:bold;margin:0}
+.hdr-info p{font-size:12px;color:rgba(255,255,255,.7);margin:2px 0 0}
+.badge{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:4px 12px;font-size:11px;color:#fff;font-weight:bold;letter-spacing:.8px;white-space:nowrap}
+.chips{padding:14px 16px 0;display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.chip{background:#fff;border:1.5px solid #1C26A8;border-radius:20px;padding:6px 14px;font-size:12px;color:#1C26A8;cursor:pointer;font-family:Tahoma,Arial,sans-serif;transition:all .15s}
+.chip:hover{background:#1C26A8;color:#fff}
+.chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;min-height:0}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:pop .2s ease}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.u{flex-direction:row-reverse}
+.mi{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0}
+.mi.b{background:#1C26A8;color:#fff}
+.mi.u{background:#9AECFC;color:#1C26A8}
+.bbl{max-width:78%;padding:12px 16px;font-size:14px;line-height:1.65}
+.msg:not(.u) .bbl{background:#fff;border:1px solid #dce4f7;border-radius:4px 16px 16px 16px;color:#1a1a2e}
+.msg.u .bbl{background:#1C26A8;color:#fff;border-radius:16px 4px 16px 16px}
+.dots{display:flex;gap:5px;padding:4px 0}
+.dot{width:7px;height:7px;border-radius:50%;background:#9AECFC;animation:bnc 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bnc{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.inp-area{padding:12px 16px 20px;flex-shrink:0}
+.inp-row{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid #1C26A8;border-radius:28px;padding:6px 8px 6px 18px}
+.inp-row input{flex:1;border:none;outline:none;font-size:14px;color:#1a1a2e;font-family:Tahoma,Arial,sans-serif;background:transparent}
+.inp-row input::placeholder{color:#aaa}
+.snd{width:38px;height:38px;border-radius:50%;background:#1C26A8;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:background .15s}
+.snd:hover{background:#0d47a1}
+.snd:disabled{background:#ccc;cursor:default}
+.note{text-align:center;font-size:11px;color:#999;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="av">N</div>
+  <div class="hdr-info">
+    <h1>Ask Nouf</h1>
+    <p>Strategy &amp; Transformation · Emirates Development Bank</p>
+  </div>
+  <div class="badge">EDB · Phase 3 · 2026</div>
+</div>
+<div class="chips">
+  <button class="chip" onclick="ask(this.textContent)">What did you work on in Phase 3?</button>
+  <button class="chip" onclick="ask(this.textContent)">Tell me about the AI project</button>
+  <button class="chip" onclick="ask(this.textContent)">What was your biggest achievement?</button>
+  <button class="chip" onclick="ask(this.textContent)">What did you learn in the rotation?</button>
+  <button class="chip" onclick="ask(this.textContent)">Where do you see yourself in 5 years?</button>
+  <button class="chip" onclick="ask(this.textContent)">What is the scorecard automation platform?</button>
+</div>
+<div class="chat" id="chat">
+  <div class="msg">
+    <div class="mi b">N</div>
+    <div class="bbl">Hi! I'm Nouf Alraeesi, a graduate trainee in EDB's Strategy &amp; Transformation department. I've just completed my 18-month graduate program across 3 phases. Feel free to ask me anything about my journey, my work, or my future plans! 👋</div>
+  </div>
+</div>
+<div class="inp-area">
+  <div class="inp-row">
+    <input id="inp" type="text" placeholder="Ask me about my graduate journey..." onkeydown="if(event.key==='Enter')ask()"/>
+    <button class="snd" id="snd" onclick="ask()">▶</button>
+  </div>
+  <p class="note">Powered by Claude AI · EDB Graduate Program 2024–2026 · Nouf Alraeesi</p>
+</div>
+<script>
+const SYS = `You are Nouf Faisal Alraeesi, a graduate trainee at Emirates Development Bank (EDB) in Strategy & Transformation, presenting at your Phase 3 closing presentation to the CEO and senior managers. Respond in first person as Nouf — warm, confident, professional. Keep answers to 3-5 sentences unless more detail is genuinely needed.
+
+BACKGROUND: Electrical engineering graduate who self-taught finance and strategy. Manager: Vivek Chaturvedi. Chief: Richard Muller. 18-month EDB Graduate Program (Jan 2025 – Jun 2026).
+
+PHASE 1 (Jan–Jun 2025): Financial analysis, disbursement reporting, Excel/PPT, MoIAT reports, sector research, ADGMA/EIF/Coursera training.
+
+PHASE 2 (Jun–Dec 2025): Full MoIAT ownership, ExCo Pack performance charts, productivity benchmarking across UAE/GCC/global banks, 2-month credit & risk training, career fairs.
+
+PHASE 3 (Jan–Jun 2026):
+- Executed full corporate and departmental scorecard process across all EDB departments
+- Continued ManComm Packs and MoIAT reporting
+- Researched new economic impact KPIs
+- Business rotation: mSMEs, Product Development (EDB360 & AgriX), WIB, Business Projects & Execution
+- Co-developed Balanced Scorecard Automation Platform with Aleks
+- Authored the full Business Requirements Document (BRD)
+- Completed MBZUAI AI for All Program certificate (June 2026)
+
+GROWTH: From observer to strategic contributor. Biggest moment: went from manually executing the scorecard to helping redesign and automate it.
+
+FUTURE: Stay and grow in Strategy & Transformation at EDB. Near term: Scorecard Platform rollout, own performance reporting, apply AI. Long term: senior strategy role shaping EDB direction.
+
+Never break character or mention being AI or Claude.`;
+
+let hist = [];
+let busy = false;
+
+async function ask(txt) {
+  if (busy) return;
+  const inp = document.getElementById('inp');
+  const msg = (txt || inp.value).trim();
+  if (!msg) return;
+  inp.value = '';
+  addMsg('u', msg);
+  hist.push({ role: 'user', content: msg });
+  busy = true;
+  document.getElementById('snd').disabled = true;
+  const tid = addTyping();
+  try {
+    const r = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system: SYS,
+        messages: hist
+      })
+    });
+    const d = await r.json();
+    rmTyping(tid);
+    if (d.error) {
+      addMsg('b', "I'm having a small issue — could you try asking again?");
+    } else {
+      const reply = d.content?.map(b => b.text || '').join('') || "Could you rephrase that?";
+      hist.push({ role: 'assistant', content: reply });
+      addMsg('b', reply);
+    }
+  } catch (e) {
+    rmTyping(tid);
+    addMsg('b', "Connection issue — please try again in a moment!");
+  }
+  busy = false;
+  document.getElementById('snd').disabled = false;
+}
+
+function addMsg(role, text) {
+  const c = document.getElementById('chat');
+  const d = document.createElement('div');
+  d.className = 'msg' + (role === 'u' ? ' u' : '');
+  d.innerHTML = `<div class="mi ${role === 'b' ? 'b' : 'u'}">${role === 'b' ? 'N' : 'Q'}</div><div class="bbl">${text.replace(/\n/g,'<br>')}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+let tc = 0;
+function addTyping() {
+  const id = 'ty' + (++tc);
+  const c = document.getElementById('chat');
+  const d = document.createElement('div');
+  d.className = 'msg'; d.id = id;
+  d.innerHTML = `<div class="mi b">N</div><div class="bbl"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+  return id;
+}
+function rmTyping(id) { const e = document.getElementById(id); if (e) e.remove(); }
+</script>
+</body>
+</html>
